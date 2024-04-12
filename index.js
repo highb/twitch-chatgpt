@@ -24,6 +24,7 @@ app.set('view engine', 'ejs');
 let GPT_MODE = process.env.GPT_MODE // CHAT or PROMPT
 let HISTORY_LENGTH = process.env.HISTORY_LENGTH // number of messages to keep in history
 let OPENAI_API_KEY = process.env.OPENAI_API_KEY // openai api key
+let OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY // openrouter api key
 let MODEL_NAME = process.env.MODEL_NAME // openai model name (e.g. gpt-3, gpt-3.5-turbo, gpt-4)
 let TWITCH_USER = process.env.TWITCH_USER // twitch bot username
 let TWITCH_AUTH =  process.env.TWITCH_AUTH // tmi auth token
@@ -88,7 +89,7 @@ const channels = CHANNELS;
 const channel = channels[0];
 console.log("Channels: " + channels)
 
-const bot = new TwitchBot(TWITCH_USER, TWITCH_AUTH, channels, OPENAI_API_KEY, ENABLE_TTS);
+const bot = new TwitchBot(TWITCH_USER, TWITCH_AUTH, channels, OPENAI_API_KEY, ENABLE_TTS, OPENROUTER_API_KEY);
 
 // setup openai operations
 file_context = fs.readFileSync("./file_context.txt", 'utf8');

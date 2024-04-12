@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 import { promises as fsPromises } from 'fs';
 
 export class TwitchBot {
-    constructor(bot_username, oauth_token, channels, openai_api_key, enable_tts) {
+    constructor(bot_username, oauth_token, channels, openai_api_key, enable_tts, openrouter_api_key) {
         this.channels = channels;
         this.client = new tmi.client({
             connection: {
@@ -17,7 +17,26 @@ export class TwitchBot {
             },
             channels: this.channels
         });
-        this.openai = new OpenAI({apiKey: openai_api_key});
+        // If openai_api_key is provided, create an instance of the OpenAI API
+        if (openai_api_key !== '') {
+            this.openai = new OpenAI({apiKey: openai_api_key});
+        // Otherwise use openrouter, if it is provided
+        // What is openrouter? https://openrouter.ai/
+        } else if (openrouter_api_key !== '') {
+            this.openai = new OpenAI({
+                baseURL: "https://openrouter.ai/api/v1",
+                apiKey: openrouter_api_key,
+                defaultHeaders: {
+                //"HTTP-Referer": $YOUR_SITE_URL, // Optional, for including your app on openrouter.ai rankings.
+                //"X-Title": $YOUR_SITE_NAME, // Optional. Shows in rankings on openrouter.ai.
+                },
+                // dangerouslyAllowBrowser: true,
+            });
+        } else {
+            // If no API key is provided, fail loudly
+            console.error('No OpenAI or OpenRouter API Key provided.');
+            this.openai = null;
+        }
         this.enable_tts = enable_tts;
     }
 
